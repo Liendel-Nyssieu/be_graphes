@@ -90,7 +90,7 @@ public class Path {
         				listeok = true;
         				longueur = arc.getLength();
         				min_dist = arc;
-        			}
+        			} 
         		}
         		if (listeok == false) {
         			throw new IllegalArgumentException();
