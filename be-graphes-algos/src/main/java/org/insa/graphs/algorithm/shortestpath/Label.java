@@ -3,28 +3,27 @@ package org.insa.graphs.algorithm.shortestpath;
 import org.insa.graphs.model.*;
 import java.lang.Math;
 
-public class label implements Comparable<label>
+public class Label implements Comparable<Label>
 {
 	public Node currentvertex;
 	public boolean marque = false;
 	public double cout;
 	public Node pere;
-	public int num_node;
+	public int num_arc;
 	
 	@Override
-	public int compareTo(label other)
+	public int compareTo(Label other)
 	{
 		return (int)(this.cout-other.cout);	
 	}
 	
-	public label (Node currentvertex, Node pere, int num_node)
+	public Label (Node currentvertex, Node pere, int num_arc)
 	{
 		this.currentvertex = currentvertex;
 		this.cout = Math.pow(2, 63)-1;
 		this.marque = false;
 		this.pere = pere;
-		this.num_node = num_node; //permet de placer la node dans le tableau d'association node-label 
-								  //en récupérant l'index de la node dans la liste des nodes d'un graphe.
+		this.num_arc = num_arc;
 	}
 	
 	public double getCost()
@@ -36,4 +35,19 @@ public class label implements Comparable<label>
 	{
 		this.cout = value;
 	}
+	
+	public void passage()
+	{
+		this.marque = true;
+	}
+	
+	public int getnum_arc()
+	{
+		return this.num_arc;
+	}
+	
+    public Node getdest()
+    {
+    	return this.currentvertex;
+    }
 }
