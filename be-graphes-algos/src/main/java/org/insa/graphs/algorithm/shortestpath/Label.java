@@ -9,7 +9,6 @@ public class Label implements Comparable<Label>
 	public boolean marque = false;
 	public double cout;
 	public Node pere;
-	public int num_arc;
 	
 	@Override
 	public int compareTo(Label other)
@@ -17,13 +16,12 @@ public class Label implements Comparable<Label>
 		return (int)(this.cout-other.cout);	
 	}
 	
-	public Label (Node currentvertex, Node pere, int num_arc)
+	public Label (Node currentvertex, Node pere)
 	{
 		this.currentvertex = currentvertex;
 		this.cout = Math.pow(2, 63)-1;
 		this.marque = false;
 		this.pere = pere;
-		this.num_arc = num_arc;
 	}
 	
 	public double getCost()
@@ -41,13 +39,13 @@ public class Label implements Comparable<Label>
 		this.marque = true;
 	}
 	
-	public int getnum_arc()
-	{
-		return this.num_arc;
-	}
-	
     public Node getdest()
     {
     	return this.currentvertex;
+    }
+    
+    public void setpere(Node neo_pere)
+    {
+    	this.pere = neo_pere;
     }
 }
