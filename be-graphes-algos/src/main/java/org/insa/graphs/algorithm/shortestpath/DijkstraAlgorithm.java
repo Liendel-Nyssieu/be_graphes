@@ -27,8 +27,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	label_node_list.add(new Label(nodes.get(i), null));  //Les nodes et les labels ont le même index dans leurs listes respectives
         }
         BinaryHeap<Label> dijkstra_heap = new BinaryHeap<>();
-        dijkstra_heap.insert(label_node_list.get(nodes.indexOf(data.getOrigin())));
         label_node_list.get(nodes.indexOf(data.getOrigin())).setCost(0);
+        dijkstra_heap.insert(label_node_list.get(nodes.indexOf(data.getOrigin())));
         notifyOriginProcessed(data.getOrigin());
         
         //--------------------------début de l'algo---------------------------------------------------------------------------
