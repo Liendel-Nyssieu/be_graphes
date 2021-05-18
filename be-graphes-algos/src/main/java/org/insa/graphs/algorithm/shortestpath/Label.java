@@ -5,15 +5,15 @@ import java.lang.Math;
 
 public class Label implements Comparable<Label>
 {
-	public Node currentvertex;
-	public boolean marque = false;
-	public double cout;
-	public Node pere;
+	private Node currentvertex;
+	protected boolean marque = false;
+	protected double cout;
+	private Node pere;
 	
 	@Override
 	public int compareTo(Label other)
 	{
-		return (int)(this.cout-other.cout);	
+		return (int)(this.get_tot_cost()-other.get_tot_cost());	
 	}
 	
 	public Label (Node currentvertex, Node pere)
@@ -24,7 +24,7 @@ public class Label implements Comparable<Label>
 		this.pere = pere;
 	}
 	
-	public double getCost()
+	protected double getCost()
 	{
 		return this.cout;
 	}
@@ -47,5 +47,23 @@ public class Label implements Comparable<Label>
     public void setpere(Node neo_pere)
     {
     	this.pere = neo_pere;
+    }
+    
+    public Node getpere()
+    {
+    	return this.pere;
+    }
+    
+    public boolean getmarque()
+    {
+    	return this.marque;
+    }
+    
+    protected double get_heuristique() {
+    	return 0;
+    }
+    
+    public double get_tot_cost() {
+    	return this.get_heuristique()+this.getCost();
     }
 }

@@ -33,23 +33,23 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         
         //--------------------------début de l'algo---------------------------------------------------------------------------
         
-        while (!(label_node_list.get(nodes.indexOf(data.getDestination())).marque == true)) {
+        while (!(label_node_list.get(nodes.indexOf(data.getDestination())).getmarque() == true)) {
         	Label save = dijkstra_heap.deleteMin();
         	label_node_list.get(label_node_list.indexOf(save)).passage();
-        	for (Arc arc: save.currentvertex.getSuccessors()) {
+        	for (Arc arc: save.getdest().getSuccessors()) {
         		if (!(data.isAllowed(arc))) {
         			continue;
         		}
         		Label dest = label_node_list.get(nodes.indexOf(arc.getDestination()));
-        		if (dest.marque == false) {
+        		if (dest.getmarque() == false) {
         			notifyNodeReached(arc.getDestination());
-        			if (dest.getCost() > save.getCost()+data.getCost(arc)) {
-        				dest.setCost(save.getCost()+data.getCost(arc));
-        				dest.setpere(save.currentvertex);
+        			if (dest.get_tot_cost() > save.get_tot_cost()+data.getCost(arc)) {
+        				dest.setCost(save.get_tot_cost()+data.getCost(arc));
+        				dest.setpere(save.getdest());
         				
         			
         				try {
-        					dijkstra_heap.remove(dest); 
+        					dijkstra_heap.remove(dest);
         				} catch(ElementNotFoundException error) {}
         				dijkstra_heap.insert(dest);
         			}
@@ -60,7 +60,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //------------------------création de la solution------------------------------------------------
         ShortestPathSolution solution;
         
-        if (!label_node_list.get(nodes.indexOf(data.getDestination())).marque == false) {
+        if (label_node_list.get(nodes.indexOf(data.getDestination())).getmarque() == false) {
         	solution = new ShortestPathSolution(data, AbstractSolution.Status.INFEASIBLE);
         } else {
         	notifyDestinationReached(data.getDestination());
@@ -69,7 +69,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	nodes_solution.add(data.getDestination());
         	Node node = nodes_solution.get(0);
         	while (!(node.equals(data.getOrigin()))) {
-        		Node father_node = nodes.get(label_node_list.get(nodes.indexOf(node)).pere.getId());
+        		Node father_node = nodes.get(label_node_list.get(nodes.indexOf(node)).getpere().getId());
         		nodes_solution.add(father_node);
         		node = father_node;
         	}
