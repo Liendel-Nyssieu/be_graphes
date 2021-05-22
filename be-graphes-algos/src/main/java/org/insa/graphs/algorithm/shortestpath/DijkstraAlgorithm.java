@@ -15,13 +15,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     }
 
     //----------------------initialisation------------------------------------------------------------------------------------
-	protected static List<Label> label_node_list = new ArrayList<Label>();
     
-    void init(List<Node> nodes, ShortestPathData data)
+    Label[] init(List<Node> nodes, ShortestPathData data)
     {
+    	Label[] liste = new Label[nodes.size()];
     	for (int i = 0; i < data.getGraph().size(); i++) {
-    		label_node_list.add(new Label(nodes.get(i), null));
+    		liste[i] = new Label(nodes.get(i), null);
     	}
+    	return liste;
     }
     
     @Override
@@ -30,28 +31,28 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         // TODO:
         List<Node> nodes = new ArrayList<Node>();
         nodes = data.getGraph().getNodes();
-        init(nodes, data); 
+        Label[] label_node_list = init(nodes, data); 
         		
         BinaryHeap<Label> dijkstra_heap = new BinaryHeap<>();
-        label_node_list.get(nodes.indexOf(data.getOrigin())).setCost(0);
-        dijkstra_heap.insert(label_node_list.get(nodes.indexOf(data.getOrigin())));
+        label_node_list[nodes.indexOf(data.getOrigin())].setCost(0);
+        dijkstra_heap.insert(label_node_list[nodes.indexOf(data.getOrigin())]);
         notifyOriginProcessed(data.getOrigin());
         
         //--------------------------début de l'algo---------------------------------------------------------------------------
         
-        while (!(label_node_list.get(nodes.indexOf(data.getDestination())).getmarque() == true)) {
+        while (!(label_node_list[nodes.indexOf(data.getDestination())].getmarque() == true)) {
         	Label save;
         	try {
         		save = dijkstra_heap.deleteMin();
         	} catch (EmptyPriorityQueueException error) { //pas de nouvel élément à analyser (très certainement aucun chemin existant entre l'origine et la destination)
         		break;
         	}
-        	label_node_list.get(label_node_list.indexOf(save)).passage();
+        	label_node_list[save.getdest().getId()].passage();
         	for (Arc arc: save.getdest().getSuccessors()) {
         		if (!(data.isAllowed(arc))) {
         			continue;
         		}
-        		Label dest = label_node_list.get(nodes.indexOf(arc.getDestination()));
+        		Label dest = label_node_list[nodes.indexOf(arc.getDestination())];
         		if (dest.getmarque() == false) {
         			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
         				dest.setCost(save.getCost()+data.getCost(arc));
@@ -74,7 +75,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //------------------------création de la solution------------------------------------------------
         ShortestPathSolution solution;
         
-        if (label_node_list.get(nodes.indexOf(data.getDestination())).getmarque() == false) {
+        if (label_node_list[nodes.indexOf(data.getDestination())].getmarque() == false) {
         	solution = new ShortestPathSolution(data, AbstractSolution.Status.INFEASIBLE);
         } else {
         	notifyDestinationReached(data.getDestination());
@@ -83,8 +84,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	nodes_solution.add(data.getDestination());
         	Node node = nodes_solution.get(0);
         	while (!(node.equals(data.getOrigin()))) {
-        		Node father_node = nodes.get(label_node_list.get(nodes.indexOf(node)).getpere().getId());
-				System.out.println("coût : "+label_node_list.get(nodes.indexOf(node)).getCost());
+        		Node father_node = nodes.get(label_node_list[nodes.indexOf(node)].getpere().getId());
+				System.out.println("coût : "+label_node_list[nodes.indexOf(node)].getCost());
         		nodes_solution.add(father_node);
         		node = father_node;
         	}
