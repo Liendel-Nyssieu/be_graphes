@@ -9,23 +9,29 @@ import org.insa.graphs.algorithm.AbstractInputData;
 import org.insa.graphs.algorithm.AbstractSolution;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
-
+	
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
     }
 
     //----------------------initialisation------------------------------------------------------------------------------------
+	protected static List<Label> label_node_list = new ArrayList<Label>();
+    
+    void init(List<Node> nodes, ShortestPathData data)
+    {
+    	for (int i = 0; i < data.getGraph().size(); i++) {
+    		label_node_list.add(new Label(nodes.get(i), null));
+    	}
+    }
+    
     @Override
     protected ShortestPathSolution doRun() {
         final ShortestPathData data = getInputData();
         // TODO:
         List<Node> nodes = new ArrayList<Node>();
         nodes = data.getGraph().getNodes();
-        List<Label> label_node_list = new ArrayList<Label>();
-       
-        for (int i = 0; i < nodes.size(); i++) {
-        	label_node_list.add(new Label(nodes.get(i), null));  //Les nodes et les labels ont le même index dans leurs listes respectives
-        }
+        init(nodes, data); 
+        		
         BinaryHeap<Label> dijkstra_heap = new BinaryHeap<>();
         label_node_list.get(nodes.indexOf(data.getOrigin())).setCost(0);
         dijkstra_heap.insert(label_node_list.get(nodes.indexOf(data.getOrigin())));
@@ -43,8 +49,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		Label dest = label_node_list.get(nodes.indexOf(arc.getDestination()));
         		if (dest.getmarque() == false) {
         			notifyNodeReached(arc.getDestination());
-        			if (dest.get_tot_cost() > save.get_tot_cost()+data.getCost(arc)) {
-        				dest.setCost(save.get_tot_cost()+data.getCost(arc));
+        			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
+        				dest.setCost(save.getCost()+data.getCost(arc));
         				dest.setpere(save.getdest());
         				
         			

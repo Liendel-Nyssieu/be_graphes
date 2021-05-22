@@ -19,7 +19,7 @@ public class LabelStar extends Label {
 	}
 	
 	@Override
-	protected double get_heuristique() 
+	public double get_heuristique() 
 	{
 		return this.heuristique;
 	}

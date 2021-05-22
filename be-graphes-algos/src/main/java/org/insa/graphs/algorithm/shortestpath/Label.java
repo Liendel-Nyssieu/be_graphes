@@ -24,7 +24,7 @@ public class Label implements Comparable<Label>
 		this.pere = pere;
 	}
 	
-	protected double getCost()
+	public double getCost()
 	{
 		return this.cout;
 	}
@@ -59,7 +59,7 @@ public class Label implements Comparable<Label>
     	return this.marque;
     }
     
-    protected double get_heuristique() {
+    public double get_heuristique() {
     	return 0;
     }
     
