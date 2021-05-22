@@ -40,7 +40,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //--------------------------début de l'algo---------------------------------------------------------------------------
         
         while (!(label_node_list.get(nodes.indexOf(data.getDestination())).getmarque() == true)) {
-        	Label save = dijkstra_heap.deleteMin();
+        	Label save;
+        	try {
+        		save = dijkstra_heap.deleteMin();
+        	} catch (EmptyPriorityQueueException error) { //pas de nouvel élément à analyser (très certainement aucun chemin existant entre l'origine et la destination)
+        		break;
+        	}
         	label_node_list.get(label_node_list.indexOf(save)).passage();
         	for (Arc arc: save.getdest().getSuccessors()) {
         		if (!(data.isAllowed(arc))) {
@@ -48,17 +53,20 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		}
         		Label dest = label_node_list.get(nodes.indexOf(arc.getDestination()));
         		if (dest.getmarque() == false) {
-        			notifyNodeReached(arc.getDestination());
         			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
         				dest.setCost(save.getCost()+data.getCost(arc));
-        				dest.setpere(save.getdest());
+        				dest.setpere(save.getdest()); 			
         				
-        			
-        				try {
-        					dijkstra_heap.remove(dest);
-        				} catch(ElementNotFoundException error) {}
-        				dijkstra_heap.insert(dest);
+        			} else if ((dest.get_tot_cost() == save.getCost()+data.getCost(arc)+dest.get_heuristique()) && (dest.getdest().getPoint().distanceTo(dest.getpere().getPoint()) > dest.getdest().getPoint().distanceTo(save.getdest().getPoint()))) {
+        				dest.setpere(save.getdest());
+ 
         			}
+        			try {
+        				dijkstra_heap.remove(dest);
+        			} catch(ElementNotFoundException error) {}
+        			dijkstra_heap.insert(dest);
+    				notifyNodeReached(arc.getDestination());
+        				
         		}
         	}
         }
@@ -76,6 +84,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	Node node = nodes_solution.get(0);
         	while (!(node.equals(data.getOrigin()))) {
         		Node father_node = nodes.get(label_node_list.get(nodes.indexOf(node)).getpere().getId());
+				System.out.println("coût : "+label_node_list.get(nodes.indexOf(node)).getCost());
         		nodes_solution.add(father_node);
         		node = father_node;
         	}
