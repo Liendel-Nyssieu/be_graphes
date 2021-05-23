@@ -152,8 +152,8 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     	} else {
     		this.arraySet(index, savevalue);
     		this.currentSize--;
-    		this.percolateDown(index);
     		this.percolateDown(this.indexParent(index));
+    		this.percolateDown(index);
     	}
     }
 
@@ -212,6 +212,29 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
      */
     public String toStringTree(int maxDepth) {
         return BinaryHeapFormatter.toStringTree(this, maxDepth);
+    }
+    
+    public boolean isvalid(boolean croissant)
+    {
+    	if (this.currentSize > 0) {
+    		for (int i = 0; i < this.currentSize; i++) {
+    			int index_left = indexLeft(i);
+    			E elmprec = this.array.get(i);
+    			if (index_left < this.currentSize) {
+    				if ((this.array.get(index_left).compareTo(elmprec) < 0 && croissant == true) || (this.array.get(index_left).compareTo(elmprec) > 0 && croissant == false)) {
+    					return false;
+    				}
+    			}
+    			if (index_left+1 < this.currentSize) {
+    				if ((this.array.get(index_left+1).compareTo(elmprec) < 0 && croissant == true) || (this.array.get(index_left+1).compareTo(elmprec) > 0 && croissant == false)) {
+    					return false;
+    				}
+    			}
+    		}
+    		return true;
+    	} else {
+    		return true;
+    	}
     }
 
     @Override

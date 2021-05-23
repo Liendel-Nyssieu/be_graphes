@@ -44,6 +44,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	Label save;
         	try {
         		save = dijkstra_heap.deleteMin();
+        		notifyNodeMarked(save.getdest());
         	} catch (EmptyPriorityQueueException error) { //pas de nouvel élément à analyser (très certainement aucun chemin existant entre l'origine et la destination)
         		break;
         	}
@@ -56,17 +57,33 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		if (dest.getmarque() == false) {
         			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
         				dest.setCost(save.getCost()+data.getCost(arc));
-        				dest.setpere(save.getdest()); 			
+        				dest.setpere(save.getdest()); 
         				
+        				try {
+            				dijkstra_heap.remove(dest);
+            			} catch(ElementNotFoundException error) {}
+            			dijkstra_heap.insert(dest);
+        				notifyNodeReached(arc.getDestination());
+        				if (dijkstra_heap.isvalid(true) == false) {
+            				System.out.println(dijkstra_heap.isvalid(true));
+            				System.out.println(dijkstra_heap.toStringTree());
+        				}
+       					
         			} else if ((dest.get_tot_cost() == save.getCost()+data.getCost(arc)+dest.get_heuristique()) && (dest.getdest().getPoint().distanceTo(dest.getpere().getPoint()) > dest.getdest().getPoint().distanceTo(save.getdest().getPoint()))) {
         				dest.setpere(save.getdest());
+        				
+        				try {
+            				dijkstra_heap.remove(dest);
+            			} catch(ElementNotFoundException error) {}
+            			dijkstra_heap.insert(dest);
+        				notifyNodeReached(arc.getDestination());
+        				if (dijkstra_heap.isvalid(true) == false) {
+            				System.out.println(dijkstra_heap.isvalid(true));
+            				System.out.println(dijkstra_heap.toStringTree());
+        				}
+        				
  
         			}
-        			try {
-        				dijkstra_heap.remove(dest);
-        			} catch(ElementNotFoundException error) {}
-        			dijkstra_heap.insert(dest);
-    				notifyNodeReached(arc.getDestination());
         				
         		}
         	}
@@ -85,7 +102,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	Node node = nodes_solution.get(0);
         	while (!(node.equals(data.getOrigin()))) {
         		Node father_node = nodes.get(label_node_list[nodes.indexOf(node)].getpere().getId());
-				System.out.println("coût : "+label_node_list[nodes.indexOf(node)].getCost());
+				//System.out.println("coût : "+label_node_list[nodes.indexOf(node)].getCost());
         		nodes_solution.add(father_node);
         		node = father_node;
         	}
@@ -102,6 +119,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	solution = new ShortestPathSolution(data, AbstractSolution.Status.OPTIMAL, path_solution);
         	
         }
+        notifyDestinationReached(data.getDestination());
         return solution;
     }
 
