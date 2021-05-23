@@ -56,12 +56,13 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		Label dest = label_node_list[nodes.indexOf(arc.getDestination())];
         		if (dest.getmarque() == false) {
         			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
-        				dest.setCost(save.getCost()+data.getCost(arc));
-        				dest.setpere(save.getdest()); 
-        				
         				try {
             				dijkstra_heap.remove(dest);
             			} catch(ElementNotFoundException error) {}
+        				
+        				dest.setCost(save.getCost()+data.getCost(arc));
+        				dest.setpere(save.getdest()); 
+        				
             			dijkstra_heap.insert(dest);
         				notifyNodeReached(arc.getDestination());
         				if (dijkstra_heap.isvalid(true) == false) {
@@ -70,11 +71,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         				}
        					
         			} else if ((dest.get_tot_cost() == save.getCost()+data.getCost(arc)+dest.get_heuristique()) && (dest.getdest().getPoint().distanceTo(dest.getpere().getPoint()) > dest.getdest().getPoint().distanceTo(save.getdest().getPoint()))) {
-        				dest.setpere(save.getdest());
-        				
         				try {
             				dijkstra_heap.remove(dest);
             			} catch(ElementNotFoundException error) {}
+        				
+        				dest.setpere(save.getdest());
+        				
             			dijkstra_heap.insert(dest);
         				notifyNodeReached(arc.getDestination());
         				if (dijkstra_heap.isvalid(true) == false) {

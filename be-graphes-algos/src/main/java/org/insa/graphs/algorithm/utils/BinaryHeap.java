@@ -147,14 +147,19 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     	savevalue = this.array.get(this.currentSize-1);
     	if (index == -1 || index >= this.currentSize) {
     		throw new ElementNotFoundException(x);
-    	} else if (this.array.size() == 1){
-    		this.currentSize--;
+    	}
+    	
+    	this.arraySet(index, savevalue);
+    	this.array.remove(this.currentSize-1);
+    	this.currentSize--;
+    		
+    	boolean hasParent= (index != 0);
+    	if (hasParent && savevalue.compareTo(this.array.get(indexParent(index))) < 0) {
+    		this.percolateUp(index);
     	} else {
-    		this.arraySet(index, savevalue);
-    		this.currentSize--;
-    		this.percolateDown(this.indexParent(index));
     		this.percolateDown(index);
     	}
+    	
     }
 
     @Override
