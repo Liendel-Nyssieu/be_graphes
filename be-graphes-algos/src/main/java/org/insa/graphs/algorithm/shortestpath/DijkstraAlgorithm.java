@@ -34,26 +34,33 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         Label[] label_node_list = init(nodes, data); 
         		
         BinaryHeap<Label> dijkstra_heap = new BinaryHeap<>();
-        label_node_list[nodes.indexOf(data.getOrigin())].setCost(0);
-        dijkstra_heap.insert(label_node_list[nodes.indexOf(data.getOrigin())]);
+        label_node_list[data.getOrigin().getId()].setCost(0);
+        dijkstra_heap.insert(label_node_list[data.getOrigin().getId()]);
         notifyOriginProcessed(data.getOrigin());
         
         //--------------------------début de l'algo---------------------------------------------------------------------------
         
-        while (!(label_node_list[nodes.indexOf(data.getDestination())].getmarque() == true)) {
+        while (!(label_node_list[data.getDestination().getId()].getmarque() == true)) {
         	Label save;
         	try {
-        		save = dijkstra_heap.deleteMin();
-        		notifyNodeMarked(save.getdest());
-        	} catch (EmptyPriorityQueueException error) { //pas de nouvel élément à analyser (très certainement aucun chemin existant entre l'origine et la destination)
+        		save = dijkstra_heap.findMin();
+        	} catch (EmptyPriorityQueueException queue_vide) { //pas de nouvel élément à analyser (très certainement aucun chemin existant entre l'origine et la destination)
         		break;
         	}
+        	
+        	try {
+        		dijkstra_heap.remove(save);
+        	} catch (ElementNotFoundException not_found) {}
+        	
         	label_node_list[save.getdest().getId()].passage();
+    		notifyNodeMarked(save.getdest());
+    		
         	for (Arc arc: save.getdest().getSuccessors()) {
         		if (!(data.isAllowed(arc))) {
         			continue;
         		}
-        		Label dest = label_node_list[nodes.indexOf(arc.getDestination())];
+        		
+        		Label dest = label_node_list[arc.getDestination().getId()];
         		if (dest.getmarque() == false) {
         			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
         				try {
@@ -67,7 +74,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         				notifyNodeReached(arc.getDestination());
         				if (dijkstra_heap.isvalid(true) == false) {
             				System.out.println(dijkstra_heap.isvalid(true));
-            				System.out.println(dijkstra_heap.toStringTree());
         				}
        					
         			} else if ((dest.get_tot_cost() == save.getCost()+data.getCost(arc)+dest.get_heuristique()) && (dest.getdest().getPoint().distanceTo(dest.getpere().getPoint()) > dest.getdest().getPoint().distanceTo(save.getdest().getPoint()))) {
@@ -81,9 +87,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         				notifyNodeReached(arc.getDestination());
         				if (dijkstra_heap.isvalid(true) == false) {
             				System.out.println(dijkstra_heap.isvalid(true));
-            				System.out.println(dijkstra_heap.toStringTree());
-        				}
-        				
+        				}        				
  
         			}
         				
@@ -94,7 +98,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //------------------------création de la solution------------------------------------------------
         ShortestPathSolution solution;
         
-        if (label_node_list[nodes.indexOf(data.getDestination())].getmarque() == false) {
+        if (label_node_list[data.getDestination().getId()].getmarque() == false) {
         	solution = new ShortestPathSolution(data, AbstractSolution.Status.INFEASIBLE);
         } else {
         	notifyDestinationReached(data.getDestination());
@@ -103,8 +107,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	nodes_solution.add(data.getDestination());
         	Node node = nodes_solution.get(0);
         	while (!(node.equals(data.getOrigin()))) {
-        		Node father_node = nodes.get(label_node_list[nodes.indexOf(node)].getpere().getId());
-				//System.out.println("coût : "+label_node_list[nodes.indexOf(node)].getCost());
+        		Node father_node = nodes.get(label_node_list[node.getId()].getpere().getId());
+				System.out.println("heuristique : "+label_node_list[node.getId()].get_heuristique());
         		nodes_solution.add(father_node);
         		node = father_node;
         	}

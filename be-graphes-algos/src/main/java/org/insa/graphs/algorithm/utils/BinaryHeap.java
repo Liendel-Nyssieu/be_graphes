@@ -1,6 +1,7 @@
 package org.insa.graphs.algorithm.utils;
 
 import java.util.ArrayList;
+import java.lang.Double;
 
 /**
  * Implements a binary heap containing elements of type E.
@@ -226,12 +227,16 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     			int index_left = indexLeft(i);
     			E elmprec = this.array.get(i);
     			if (index_left < this.currentSize) {
-    				if ((this.array.get(index_left).compareTo(elmprec) < 0 && croissant == true) || (this.array.get(index_left).compareTo(elmprec) > 0 && croissant == false)) {
+    				if (this.array.get(index_left).compareTo(elmprec) < 0 && croissant == true) {
+    					return false;
+    				} else if (this.array.get(index_left).compareTo(elmprec) > 0 && croissant == false) {
     					return false;
     				}
     			}
     			if (index_left+1 < this.currentSize) {
-    				if ((this.array.get(index_left+1).compareTo(elmprec) < 0 && croissant == true) || (this.array.get(index_left+1).compareTo(elmprec) > 0 && croissant == false)) {
+    				if (this.array.get(index_left+1).compareTo(elmprec) < 0 && croissant == true) {
+    					return false;
+    				} else if (this.array.get(index_left+1).compareTo(elmprec) > 0 && croissant == false) {
     					return false;
     				}
     			}

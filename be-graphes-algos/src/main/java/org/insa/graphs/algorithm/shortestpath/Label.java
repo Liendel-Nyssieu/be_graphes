@@ -13,7 +13,7 @@ public class Label implements Comparable<Label>
 	@Override
 	public int compareTo(Label other)
 	{
-		return (int)(this.get_tot_cost()-other.get_tot_cost());	
+		return Double.compare(this.get_tot_cost(), other.get_tot_cost());	
 	}
 	
 	public Label (Node currentvertex, Node pere)
