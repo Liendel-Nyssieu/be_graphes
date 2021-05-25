@@ -108,7 +108,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	Node node = nodes_solution.get(0);
         	while (!(node.equals(data.getOrigin()))) {
         		Node father_node = nodes.get(label_node_list[node.getId()].getpere().getId());
-				System.out.println("heuristique : "+label_node_list[node.getId()].get_heuristique());
+				//System.out.println("heuristique : "+label_node_list[node.getId()].get_heuristique());
         		nodes_solution.add(father_node);
         		node = father_node;
         	}
