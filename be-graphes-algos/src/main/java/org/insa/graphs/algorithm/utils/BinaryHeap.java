@@ -1,7 +1,6 @@
 package org.insa.graphs.algorithm.utils;
 
 import java.util.ArrayList;
-import java.lang.Double;
 
 /**
  * Implements a binary heap containing elements of type E.

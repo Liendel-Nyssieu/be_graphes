@@ -36,11 +36,19 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
         // Initialize array of predecessors.
         Arc[] predecessorArcs = new Arc[nbNodes];
 
+        //initialisation de la solution
+        ShortestPathSolution solution = null;
+        
         // Actual algorithm, we will assume the graph does not contain negative
         // cycle...
         boolean found = false;
         for (int i = 0; !found && i < nbNodes; ++i) {
             found = true;
+            if (data.getDestination().equals(data.getOrigin())) {
+            	solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph));
+            	notifyDestinationReached(data.getDestination());
+            	break;
+            }
             for (Node node: graph.getNodes()) {
                 for (Arc arc: node.getSuccessors()) {
 
@@ -67,14 +75,12 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
                 }
             }
         }
-
-        ShortestPathSolution solution = null;
-
+        
         // Destination has no predecessor, the solution is infeasible...
-        if (predecessorArcs[data.getDestination().getId()] == null) {
+        if ((predecessorArcs[data.getDestination().getId()] == null) && (data.getDestination() != data.getOrigin())) {
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }
-        else {
+        else if (data.getDestination() != data.getOrigin()) {
 
             // The destination has been found, notify the observers.
             notifyDestinationReached(data.getDestination());

@@ -7,6 +7,7 @@ import org.insa.graphs.model.*;
 import org.insa.graphs.algorithm.utils.*;
 import org.insa.graphs.algorithm.AbstractInputData;
 import org.insa.graphs.algorithm.AbstractSolution;
+import org.insa.graphs.algorithm.AbstractSolution.Status;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	
@@ -62,7 +63,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		
         		Label dest = label_node_list[arc.getDestination().getId()];
         		if (dest.getmarque() == false) {
-        			if (dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) {
+        			if ((dest.get_tot_cost() > save.getCost()+data.getCost(arc)+dest.get_heuristique()) 
+        					|| ((dest.get_tot_cost() == save.getCost()+data.getCost(arc)+dest.get_heuristique()) && (dest.getdest().getPoint().distanceTo(dest.getpere().getPoint()) > dest.getdest().getPoint().distanceTo(save.getdest().getPoint())))) {
         				try {
             				dijkstra_heap.remove(dest);
             			} catch(ElementNotFoundException error) {}
@@ -76,20 +78,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             				System.out.println(dijkstra_heap.isvalid(true));
         				}
        					
-        			} else if ((dest.get_tot_cost() == save.getCost()+data.getCost(arc)+dest.get_heuristique()) && (dest.getdest().getPoint().distanceTo(dest.getpere().getPoint()) > dest.getdest().getPoint().distanceTo(save.getdest().getPoint()))) {
-        				try {
-            				dijkstra_heap.remove(dest);
-            			} catch(ElementNotFoundException error) {}
-        				
-        				dest.setpere(save.getdest());
-        				
-            			dijkstra_heap.insert(dest);
-        				notifyNodeReached(arc.getDestination());
-        				if (dijkstra_heap.isvalid(true) == false) {
-            				System.out.println(dijkstra_heap.isvalid(true));
-        				}        				
- 
-        			}
+        			}       				
         				
         		}
         	}
@@ -122,7 +111,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		path_solution = Path.createFastestPathFromNodes(data.getGraph(), nodes_solution);
         	}
         	
-        	solution = new ShortestPathSolution(data, AbstractSolution.Status.OPTIMAL, path_solution);
+        	solution = new ShortestPathSolution(data, Status.OPTIMAL, path_solution);
         	
         }
         notifyDestinationReached(data.getDestination());

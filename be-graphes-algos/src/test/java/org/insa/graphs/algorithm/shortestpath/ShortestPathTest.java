@@ -2,7 +2,7 @@
 package org.insa.graphs.algorithm.shortestpath;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -22,6 +22,7 @@ import org.insa.graphs.model.io.BinaryGraphReader;
 import org.insa.graphs.model.io.GraphReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
+//import java.lang.Enum;
 
 public abstract class ShortestPathTest
 {
@@ -112,7 +113,7 @@ public abstract class ShortestPathTest
 		
 		int maxnode = graph.size()-1;
 		
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 50; i++) {
 			
 			//initialisation de l'origine et de la destination aléatoirement
 			int start = randomint(0, maxnode);
@@ -141,9 +142,11 @@ public abstract class ShortestPathTest
 				System.out.println("path_bf = "+path_bf);
 				
 				if (mode <= 1) {
-					assertTrue(path_bf.getLength() == path_dijkstra.getLength());
+					System.out.println("path_bf travel length : "+path_bf.getLength()+" ||| path dijkstra travel length : "+path_dijkstra.getLength());
+					assertEquals(path_bf.getLength(), path_dijkstra.getLength(), 0);
 				} else {
-					assertTrue(path_bf.getMinimumTravelTime() == path_dijkstra.getMinimumTravelTime());
+					System.out.println("path_bf travel time : "+path_bf.getMinimumTravelTime()+" ||| path dijkstra travel time : "+path_dijkstra.getMinimumTravelTime());
+					assertEquals(path_bf.getMinimumTravelTime(), path_dijkstra.getMinimumTravelTime(), Math.pow(10, -5));
 				}
 			}
 		}
